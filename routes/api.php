@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PlagiarismAI;
 use App\Http\Controllers\API\Auth\AuthController;
+use App\Http\Controllers\PlagiarismAIController;
 use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
 
 /*
@@ -36,22 +37,6 @@ Route::group(['prefix' => '/v1/user', "controller" => AuthController::class,], f
 
 
 // AI
-Route::group(['prefix' => '/v1', "controller" => AuthController::class,], function () {
-    Route::get('/ai', function () {
-        $url = "https://www.google.com/search?q=how+to+make+money";
-        $url = str_replace(" ", "+", $url);
-        $output = [];
-        $response = Http::withHeaders([
-            'Remote Address' => '142.250.97.4:443',
-            'Referrer Policy' => 'origin'
-        ])->get($url);
-        return $response;
-        // echo '<pre>';
-        // print_r($AI->links);
-        // echo '</pre>';
-
-        // for ($i=0; $i < ; $i++) {
-        //     # code...
-        // }
-    });
+Route::group(['prefix' => '/v1',], function () {
+    Route::post('ai', [PlagiarismAIController::class, 'index'])->name('ai');
 });
