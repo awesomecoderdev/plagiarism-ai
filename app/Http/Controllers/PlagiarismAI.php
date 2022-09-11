@@ -65,7 +65,7 @@ class PlagiarismAI extends Controller
         $response = Http::withHeaders([
             "Host" => "google.com",
         ])->get($url);
-        if ($response->successful()) {
+        if ($response->successful() && $response->status() == 200) {
             $htmlDom = new DOMDocument();
             @$htmlDom->loadHTML($response->body());
             $links =  $htmlDom->getElementsByTagName('a');

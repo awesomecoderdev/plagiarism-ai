@@ -2,14 +2,15 @@
 
 namespace App\Jobs;
 
+use Throwable;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\File;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 
 class ProcessDataScraperAI implements ShouldQueue
 {
@@ -55,10 +56,15 @@ class ProcessDataScraperAI implements ShouldQueue
                     if (!File::isDirectory($path)) {
                         File::makeDirectory($path, 0777, true, true);
                     }
-                    $response = Http::get($link);
-                    if ($response->successful() && !$response->clientError()) {
-                        $name = md5($link);
-                        File::put("$path/$name.html", $response->body());
+
+                    try {
+                        $response = Http::get($link);
+                        if ($response->successful() && $response->status() == 200) {
+                            $name = md5($link);
+                            File::put("$path/$name.html", $response->body());
+                        }
+                    } catch (Throwable $e) {
+                        continue;
                     }
                 }
             }
