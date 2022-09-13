@@ -89,11 +89,16 @@ class PlagiarismAI extends Controller
                     }
                 }
             }
+        } else {
+            // for ($i = 0; $i < 20; $i++) {
+            //     $this->links[] = Str::random(50);
+            // }
+            $this->links[] = "https://awesomecoder.org/";
+            $this->links[] = "https://awesomecoder.dev/";
+            $this->links[] = "https://fiverr.com/";
+            $this->links[] = "https://www.tiktok.com/@mdlabibhasan239/video/7141242123994549531?is_copy_url=1&is_from_webapp=v1";
         }
 
-        for ($i = 0; $i < 20; $i++) {
-            $this->links[] = Str::random(50);
-        }
         return $this->links;
     }
 
@@ -104,11 +109,11 @@ class PlagiarismAI extends Controller
      *
      * @return array<string, mixed>
      */
-    public function process(array $links = [])
+    public function process()
     {
         echo '<pre>';
         print_r($this->links);
         echo '</pre>';
-        // ProcessDataScraperAI::dispatch($links);
+        ProcessDataScraperAI::dispatch($this->links);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use Throwable;
+use DOMDocument;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
@@ -56,12 +57,27 @@ class ProcessDataScraperAI implements ShouldQueue
                     if (!File::isDirectory($path)) {
                         File::makeDirectory($path, 0777, true, true);
                     }
-
                     try {
                         $response = Http::get($link);
                         if ($response->successful() && $response->status() == 200) {
                             $name = md5($link);
+                            $jsonObj = [];
+                            $htmlDom = new DOMDocument();
+                            @$htmlDom->loadHTML($response->body());
+                            $paragraphs = $htmlDom->getElementsByTagName('p');
+                            foreach ($paragraphs as $key => $p) {
+                                $jsonObj["p"][] = trim(preg_replace('/\s\s+/', ' ', $p->textContent));
+                            }
+                            $contents =  $htmlDom->getElementsByTagName('h1');
+                            foreach ($contents as $key => $c) {
+                                $jsonObj["h1"][] = trim(preg_replace('/\s\s+/', ' ', $c->textContent));
+                            }
+                            $contents =  $htmlDom->getElementsByTagName('h2');
+                            foreach ($contents as $key => $c) {
+                                $jsonObj["h2"][] = trim(preg_replace('/\s\s+/', ' ', $c->textContent));
+                            }
                             File::put("$path/$name.html", $response->body());
+                            File::put("$path/$name.json", json_encode($jsonObj, JSON_PRETTY_PRINT));
                         }
                     } catch (Throwable $e) {
                         continue;
