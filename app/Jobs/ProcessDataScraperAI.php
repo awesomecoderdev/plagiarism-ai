@@ -53,6 +53,7 @@ class ProcessDataScraperAI implements ShouldQueue
 
                 foreach ($this->links as $key => $link) {
                     $domain = parse_url($link, PHP_URL_HOST);
+                    echo "\n Extracting data from $domain";
                     $path  = resource_path("plagiarism/data/$domain");
                     if (!File::isDirectory($path)) {
                         File::makeDirectory($path, 0777, true, true);

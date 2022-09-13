@@ -96,6 +96,9 @@ class PlagiarismAI extends Controller
             $this->links[] = "https://awesomecoder.org/";
             $this->links[] = "https://awesomecoder.dev/";
             $this->links[] = "https://fiverr.com/";
+            $this->links[] = "https://youtube.com/";
+            $this->links[] = "https://github.com/";
+            $this->links[] = "https://facebook.com/";
             $this->links[] = "https://www.tiktok.com/@mdlabibhasan239/video/7141242123994549531?is_copy_url=1&is_from_webapp=v1";
         }
 
