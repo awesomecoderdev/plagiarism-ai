@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\File;
 
 
 Route::get('/', function () {
-    $ai = new PlagiarismAI("awesomecoder");
+    $ai = new PlagiarismAI("Mispellings and grammatical errors can effect your credibility.");
     $ai->run(0);
     $ai->process();
     // $res = file_get_contents(resource_path("plagiarism/data/awesomecoder.dev/d1de586156896cd6cd13fe3c8dd6835a.html"));
@@ -31,17 +31,11 @@ Route::get('/', function () {
     //     echo trim($r->textContent);
     // }
 
-    $array1 = array('item1', 'item2', 'item3', 'item4', 'item5');
-    $array2 = array('item1', 'item4', 'item6', 'item7', 'item8', 'item9', 'item10');
-    // returns array containing only items that appear in both arrays
-    $matches = array_intersect($array1, $array2);
-    // calculate 'similarity' of array 2 to array 1
-    // if you want to calculate the inverse, the 'similarity' of array 1
-    // to array 2, replace $array1 with $array2 below
-    $a = round(count($matches));
-    $b = count($array1);
-    $similarity = $a / $b * 100;
-    echo 'SIMILARITY: ' . $similarity . '%';
+    // $word1 = "Mispellings and grammatical errors can effect your credibility. The same goes for misused commas, and other types of punctuation . Not only will Grammarly underline these issues in red, it will also showed you how to correctly write the sentence.";
+    // $word2 = "and grammatical same goes errors Mispellings grammatical errors can goes";
+    // $match = similar_text($word1, $word2, $percent);
+    // $percent = round($percent, 2);
+    // echo "$match letters are the same between '$word1' and '$word2': a $percent% match.\n";
 
     // /<h2(.*?)<\/h2>/si
 });

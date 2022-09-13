@@ -47,7 +47,7 @@ class PlagiarismAI extends Controller
      */
     public function __construct(public $search)
     {
-        $this->source = "$this->host?hl=$this->lang&num=100&q=" . str_replace(" ", "+", strtolower($search));
+        $this->source = "$this->host?q=" . str_replace(" ", "+", strtolower($search)) . '&hl=' . $this->lang . '&num=100';
     }
 
     /**
@@ -61,10 +61,11 @@ class PlagiarismAI extends Controller
     {
         $page = $start * 100;
         $url = $page != 0 ? "$this->source&start=$page" : $this->source;
-        $url = str_replace(" ", "+", $url);
         $response = Http::withHeaders([
             "Host" => "google.com",
+            "User-Agent" => 'Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Mobile Safari/537.36',
         ])->get($url);
+
         if ($response->successful() && $response->status() == 200) {
             $htmlDom = new DOMDocument();
             @$htmlDom->loadHTML($response->body());
@@ -99,6 +100,7 @@ class PlagiarismAI extends Controller
             $this->links[] = "https://youtube.com/";
             $this->links[] = "https://github.com/";
             $this->links[] = "https://facebook.com/";
+            $this->links[] = "https://en.wikipedia.org/wiki/Sibir";
             $this->links[] = "https://www.tiktok.com/@mdlabibhasan239/video/7141242123994549531?is_copy_url=1&is_from_webapp=v1";
         }
 
