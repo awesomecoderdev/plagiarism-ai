@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\ProcessDataScraperAI;
 use DOMDocument;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
+use App\Jobs\ProcessDataScraperAI;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Http;
 
 class PlagiarismAI extends Controller
 {
@@ -46,7 +47,7 @@ class PlagiarismAI extends Controller
      */
     public function __construct(public $search)
     {
-        $this->source = "$this->host?hl=$this->lang&q=" . str_replace(" ", "+", strtolower($search));
+        $this->source = "$this->host?hl=$this->lang&num=100&q=" . str_replace(" ", "+", strtolower($search));
     }
 
     /**
@@ -56,12 +57,11 @@ class PlagiarismAI extends Controller
      *
      * @return array<string, mixed>
      */
-    public function get(int $start = 0)
+    public function run(int $start = 0)
     {
-        $page = $start * 10;
+        $page = $start * 100;
         $url = $page != 0 ? "$this->source&start=$page" : $this->source;
         $url = str_replace(" ", "+", $url);
-        $output = [];
         $response = Http::withHeaders([
             "Host" => "google.com",
         ])->get($url);
@@ -81,39 +81,20 @@ class PlagiarismAI extends Controller
                             $url = is_array($slug) ? current($slug) : $url;
                             $verify = substr($url, 0, 7);
                             if ($verify != "/search") {
-                                $output[] = $url;
+                                $this->links[] = $url;
                             }
-                            // echo "<a href='$url' >" . $link->textContent . "</a>";
-                            // echo "<br>";
+                            echo "<a href='$url' >" . $link->textContent . "</a>";
+                            echo "<br>";
                         }
                     }
                 }
             }
-        } else {
-            $output[] = "Error";
         }
-        return $output;
-    }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *    * &start=20 // per page
-     * &hl=de // country
-     *
-     * @return array<string, mixed>
-     */
-    public function run(int $end = 5)
-    {
-        foreach (range(0, $end) as $key => $page) {
-            $links = $this->get($page);
-            if (!empty($links)) {
-                // $this->links = array_unique(array_merge($this->links, $links));
-                $this->links = array_merge($this->links, $links);
-            } else {
-                break;
-            }
+        for ($i = 0; $i < 20; $i++) {
+            $this->links[] = Str::random(50);
         }
-        // $this->links = array_merge($this->links, $output);
+        return $this->links;
     }
 
     /**
@@ -125,6 +106,9 @@ class PlagiarismAI extends Controller
      */
     public function process(array $links = [])
     {
-        ProcessDataScraperAI::dispatch($links);
+        echo '<pre>';
+        print_r($this->links);
+        echo '</pre>';
+        // ProcessDataScraperAI::dispatch($links);
     }
 }

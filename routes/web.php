@@ -20,9 +20,5 @@ use Illuminate\Support\Facades\File;
 Route::get('/', function () {
     $ai = new PlagiarismAI("awesomecoder");
     $ai->run(5);
-    $links = $ai->links;
-    echo '<pre>';
-    print_r($links);
-    echo '</pre>';
-    $ai->process($links);
+    $ai->process();
 });
