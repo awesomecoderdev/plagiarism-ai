@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\File;
 
 Route::get('/', function () {
     $ai = new PlagiarismAI("Mispellings and grammatical errors can effect your credibility.");
-    $ai->run(0);
+    $ai->run();
     $ai->process();
     // $res = file_get_contents(resource_path("plagiarism/data/awesomecoder.dev/d1de586156896cd6cd13fe3c8dd6835a.html"));
     // preg_match_all('%(<p[^>]*>.*?</p>)%i', $res, $matches);
