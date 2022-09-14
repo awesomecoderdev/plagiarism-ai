@@ -19,6 +19,9 @@ class PlagiarismAIController extends Controller
     public function index(AIRequest $request)
     {
         $input = $request->only(["search", "lang"]);
+        $ai = new PlagiarismAI($request->input("search"));
+        $ai->run();
+        $ai->process();
 
         return Response::json([
             "success" => true,
