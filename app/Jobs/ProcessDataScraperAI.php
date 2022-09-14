@@ -68,20 +68,19 @@ class ProcessDataScraperAI implements ShouldQueue
                                 @$htmlDom->loadHTML($response->body());
                                 $contents = $htmlDom->getElementsByTagName('body')->item(0)->textContent ? $htmlDom->getElementsByTagName('body')->item(0)->textContent : false;
                                 // $contents = strip_tags($response->body());
-                                if ($contents) {
-                                    $textContents = trim(preg_replace('/\s\s+/', ' ', $contents));
-                                    File::put("$path/$name.txt", $textContents);
-                                    File::put("$path/$name.html", $textContents);
-                                    // $json =  explode(".", $textContents);
-                                    // $json = preg_split('~(?:Mrs?|Miss|Ms|Prof|Rev|Col|Dr)[.?!:](*SKIP)(*F)|[.?!:]+\K\s+~', $textContents, 0, PREG_SPLIT_NO_EMPTY);
-                                    // File::put("$path/new_$name.json", json_encode($json, JSON_PRETTY_PRINT));
-                                }
+                                File::put("$path/$name.html", $response->body());
+                                // if ($contents) {
+                                //     $textContents = trim(preg_replace('/\s\s+/', ' ', $contents));
+                                //     File::put("$path/$name.txt", $textContents);
+                                //     File::put("$path/$name.html", $response->body());
+                                //     // $json =  explode(".", $textContents);
+                                //     // $json = preg_split('~(?:Mrs?|Miss|Ms|Prof|Rev|Col|Dr)[.?!:](*SKIP)(*F)|[.?!:]+\K\s+~', $textContents, 0, PREG_SPLIT_NO_EMPTY);
+                                //     // File::put("$path/new_$name.json", json_encode($json, JSON_PRETTY_PRINT));
+                                // }
                             }
                         } catch (Throwable $e) {
-                            File::put("$path/throwable.txt", $e->getMessage());
                             continue;
-                        } catch (Exception $exception) {
-                            File::put("$path/exception.txt", $exception->getMessage());
+                        } catch (Exception $e) {
                             continue;
                         }
                     }
