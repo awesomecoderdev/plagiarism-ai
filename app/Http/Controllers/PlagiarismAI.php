@@ -47,7 +47,7 @@ class PlagiarismAI extends Controller
      */
     public function __construct(public $search)
     {
-        $this->source = "$this->host?q=" . str_replace(" ", "+", strtolower($search)) . '&tsl=' . $this->lang . '&hl=' . $this->lang . '&num=100';
+        $this->source = "$this->host?q=" . str_replace(" ", "+", strtolower($search)) . '&hl=' . $this->lang . '&num=100';
     }
 
     /**
@@ -132,20 +132,20 @@ class PlagiarismAI extends Controller
      */
     public function process()
     {
-        foreach ($this->links as $key => $link) {
-            $href = $link;
-            $href = explode("http", $href, 2);
-            $href = isset($href[1]) ? strtok(strtok("http$href[1]", '&'), '?') : false;
-            if ($href) {
-                if (strpos($href, "google.") == false) {
-                    echo  $href;
-                    echo "<br>";
-                }
-            }
-        }
+        // foreach ($this->links as $key => $link) {
+        //     $href = $link;
+        //     $href = explode("http", $href, 2);
+        //     $href = isset($href[1]) ? strtok(strtok("http$href[1]", '&'), '?') : false;
+        //     if ($href) {
+        //         if (strpos($href, "google.") == false) {
+        //             echo  $href;
+        //             echo "<br>";
+        //         }
+        //     }
+        // }
         echo '<pre>';
         print_r($this->links);
         echo '</pre>';
-        // ProcessDataScraperAI::dispatch($this->links);
+        ProcessDataScraperAI::dispatch($this->links);
     }
 }

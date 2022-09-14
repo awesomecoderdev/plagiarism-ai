@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\File;
 
 
 Route::get('/', function () {
-    $ai = new PlagiarismAI("Mispellings and grammatical errors can effect your credibility.");
+    $ai = new PlagiarismAI("Awesomecoder");
     $ai->run();
     $ai->process();
     // $res = file_get_contents(resource_path("plagiarism/data/awesomecoder.dev/d1de586156896cd6cd13fe3c8dd6835a.html"));
@@ -26,7 +26,7 @@ Route::get('/', function () {
     // preg_match_all('/<p>(.*?)<\/p>/s', $res, $matches);
     // $htmlDom = new DOMDocument();
     // @$htmlDom->loadHTML($res);
-    // $ratings =  $htmlDom->getElementsByTagName('p');
+    // echo $ratings =  $htmlDom->getElementsByTagName('body')->item(0)->nodeValue;
     // foreach ($ratings as $key => $r) {
     //     echo trim($r->textContent);
     // }

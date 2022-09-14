@@ -53,35 +53,32 @@ class ProcessDataScraperAI implements ShouldQueue
 
                 foreach ($this->links as $key => $link) {
                     $domain = parse_url($link, PHP_URL_HOST);
-                    echo "\n Extracting data from $domain";
-                    $path  = resource_path("plagiarism/data/$domain");
-                    if (!File::isDirectory($path)) {
-                        File::makeDirectory($path, 0777, true, true);
-                    }
-                    try {
-                        $response = Http::get($link);
-                        if ($response->successful() && $response->status() == 200) {
-                            $name = md5($link);
-                            $jsonObj = [];
-                            $htmlDom = new DOMDocument();
-                            @$htmlDom->loadHTML($response->body());
-                            $paragraphs = $htmlDom->getElementsByTagName('p');
-                            foreach ($paragraphs as $key => $p) {
-                                $jsonObj["p"][] = trim(preg_replace('/\s\s+/', ' ', $p->textContent));
-                            }
-                            $contents =  $htmlDom->getElementsByTagName('h1');
-                            foreach ($contents as $key => $c) {
-                                $jsonObj["h1"][] = trim(preg_replace('/\s\s+/', ' ', $c->textContent));
-                            }
-                            $contents =  $htmlDom->getElementsByTagName('h2');
-                            foreach ($contents as $key => $c) {
-                                $jsonObj["h2"][] = trim(preg_replace('/\s\s+/', ' ', $c->textContent));
-                            }
-                            File::put("$path/$name.html", $response->body());
-                            File::put("$path/$name.json", json_encode($jsonObj, JSON_PRETTY_PRINT));
+                    if ($domain) {
+                        echo "\n Extracting data from $domain";
+                        $path  = resource_path("plagiarism/data/$domain");
+                        if (!File::isDirectory($path)) {
+                            File::makeDirectory($path, 0777, true, true);
                         }
-                    } catch (Throwable $e) {
-                        continue;
+                        try {
+                            $response = Http::get($link);
+                            if ($response->successful() && $response->status() == 200) {
+                                $name = md5($link);
+                                // $htmlDom = new DOMDocument();
+                                // @$htmlDom->loadHTML($response->body());
+                                // $contents = $htmlDom->getElementsByTagName('body')->item(0)->textContent ? $htmlDom->getElementsByTagName('body')->item(0)->textContent : false;
+                                $contents = strip_tags($response->body());
+                                if ($contents) {
+                                    $textContents = trim(preg_replace('/\s\s+/', ' ', $contents));
+                                    File::put("$path/$name.txt", $textContents);
+                                    File::put("$path/$name.html", $textContents);
+                                    // $json =  explode(".", $textContents);
+                                    // $json = preg_split('~(?:Mrs?|Miss|Ms|Prof|Rev|Col|Dr)[.?!:](*SKIP)(*F)|[.?!:]+\K\s+~', $textContents, 0, PREG_SPLIT_NO_EMPTY);
+                                    // File::put("$path/new_$name.json", json_encode($json, JSON_PRETTY_PRINT));
+                                }
+                            }
+                        } catch (Throwable $e) {
+                            continue;
+                        }
                     }
                 }
             }
