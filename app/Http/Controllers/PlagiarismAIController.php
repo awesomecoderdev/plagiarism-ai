@@ -22,7 +22,7 @@ class PlagiarismAIController extends Controller
         $ai = new PlagiarismAI($request->input("search"));
         $ai->lang = $request->input("lang");
         $ai->run();
-        // $ai->process();
+        $ai->process();
 
         return Response::json([
             "success" => true,

@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use Exception;
 use Throwable;
 use DOMDocument;
 use Illuminate\Bus\Queueable;
@@ -63,10 +64,10 @@ class ProcessDataScraperAI implements ShouldQueue
                             $response = Http::get($link);
                             if ($response->successful() && $response->status() == 200) {
                                 $name = md5($link);
-                                // $htmlDom = new DOMDocument();
-                                // @$htmlDom->loadHTML($response->body());
-                                // $contents = $htmlDom->getElementsByTagName('body')->item(0)->textContent ? $htmlDom->getElementsByTagName('body')->item(0)->textContent : false;
-                                $contents = strip_tags($response->body());
+                                $htmlDom = new DOMDocument();
+                                @$htmlDom->loadHTML($response->body());
+                                $contents = $htmlDom->getElementsByTagName('body')->item(0)->textContent ? $htmlDom->getElementsByTagName('body')->item(0)->textContent : false;
+                                // $contents = strip_tags($response->body());
                                 if ($contents) {
                                     $textContents = trim(preg_replace('/\s\s+/', ' ', $contents));
                                     File::put("$path/$name.txt", $textContents);
@@ -77,6 +78,10 @@ class ProcessDataScraperAI implements ShouldQueue
                                 }
                             }
                         } catch (Throwable $e) {
+                            File::put("$path/throwable.txt", $e->getMessage());
+                            continue;
+                        } catch (Exception $exception) {
+                            File::put("$path/exception.txt", $exception->getMessage());
                             continue;
                         }
                     }
