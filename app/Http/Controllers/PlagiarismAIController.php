@@ -20,12 +20,15 @@ class PlagiarismAIController extends Controller
     {
         $input = $request->only(["search", "lang"]);
         $ai = new PlagiarismAI($request->input("search"));
+        $ai->lang = $request->input("lang");
         $ai->run();
-        $ai->process();
+        // $ai->process();
 
         return Response::json([
             "success" => true,
             "message" => $request->all(),
+            "links" => $ai->links,
+            "status" => $ai->status,
         ], HttpResponse::HTTP_OK);
     }
 }

@@ -36,6 +36,13 @@ class PlagiarismAI extends Controller
     /**
      * The attributes that are mass assignable.
      *
+     * @var string
+     */
+    public $status;
+
+    /**
+     * The attributes that are mass assignable.
+     *
      * @var array<string, mixed>
      */
     public $links = [];
@@ -47,7 +54,7 @@ class PlagiarismAI extends Controller
      */
     public function __construct(public $search)
     {
-        $this->source = "$this->host?q=" . str_replace(" ", "+", strtolower($search)) . '&hl=' . $this->lang . '&num=100';
+        $this->source = "$this->host?q=" . str_replace(" ", "+", strtolower($search));
     }
 
     /**
@@ -61,13 +68,17 @@ class PlagiarismAI extends Controller
     {
         $page = $start * 100;
         $url = $page != 0 ? "$this->source&start=$page" : $this->source;
+        $url = $url . '&hl=' . $this->lang . '&num=100';
         $response = Http::withHeaders([
             "Host" => "google.com",
             "User-Agent" => 'Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Mobile Safari/537.36',
         ])->get($url);
+        $this->status =  $response->status();
 
-        echo $response->status();
-        echo "<br>";
+        // echo "<br>";
+        // echo $url;
+        // echo "<br>";
+
 
         if ($response->successful() && $response->status() == 200) {
             $htmlDom = new DOMDocument();
@@ -143,9 +154,9 @@ class PlagiarismAI extends Controller
         //         }
         //     }
         // }
-        echo '<pre>';
-        print_r($this->links);
-        echo '</pre>';
+        // echo '<pre>';
+        // print_r($this->links);
+        // echo '</pre>';
         ProcessDataScraperAI::dispatch($this->links);
     }
 }
